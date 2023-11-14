@@ -2,7 +2,7 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, Container, Grid, Button } from "@mui/material";
 import React from "react";
-import FeaturedPost from "./featurepost/page";
+import FeaturedPost from "../blogs/featurepost/page";
 import "../public/images/Image.png";
 import Header from "../components/Header/header";
 import Footer from "../components/Footer/footer";
@@ -62,6 +62,7 @@ const BlogsPage = () => {
             <div
               className="New"
               style={{
+                top: 80,
                 height: 484,
                 position: "relative",
               }}
@@ -73,6 +74,7 @@ const BlogsPage = () => {
                   height: 484,
                   left: 0,
                   top: 0,
+                  zIndex: -1,
                   position: "absolute",
                 }}
                 src="https://source.unsplash.com/random?wallpapers"
@@ -80,21 +82,16 @@ const BlogsPage = () => {
               <div
                 style={{
                   position: "absolute",
-                  backgroundColor: "white",
-                  marginTop: 420,
-                  marginLeft: 120,
-                  padding: 20,
-                  zIndex: 1,
-                  maxWidth: 350,
-                  height: 150,
-                  border: "2px solid blue",
+                  color: "white",
+                  marginTop: 400,
+                  marginLeft: 80,
                 }}
               >
-                <h3>
+                <h2>
                   {" "}
                   The Impact Of Technology on The workspace : How texhnology is
                   changing
-                </h3>
+                </h2>
               </div>
             </div>
 
@@ -111,7 +108,7 @@ const BlogsPage = () => {
                 wordWrap: "break-word",
               }}
             >
-              Latest Post
+              Blogs List
             </div>
             <div>
               <Grid container spacing={6}>
@@ -123,13 +120,13 @@ const BlogsPage = () => {
 
             <Button
               type="submit"
-              variant="text"
+              variant="contained"
               sx={{
                 mt: 3,
                 ml: 1,
               }}
             >
-              View All posts
+              Load More
             </Button>
           </main>
         </Container>
