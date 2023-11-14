@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { CircularProgress, Backdrop } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import Googlebutton from '@/app/components/googlebutton/googlebutton'
+import Googlebutton from '../components/googlebutton/googlebutton'
 
 interface IUser {
   email: string;
@@ -169,8 +169,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
-function login(email: string, password: string) {
-  throw new Error("Function not implemented.");
-}
 
