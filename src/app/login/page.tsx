@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/navigation";
+
 import * as yup from "yup";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -16,7 +16,10 @@ import Container from "@mui/material/Container";
 import { CircularProgress, Backdrop } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Googlebutton from '../components/googlebutton/googlebutton'
-
+import { Login_User } from "@/GraphqlApi/mutation";
+import { useMutation } from "@apollo/client";
+import createApolloClient from "@/GraphqlApi/apolloclient";
+import { useRouter } from "next/navigation";
 interface IUser {
   email: string;
   password: string;
@@ -41,26 +44,45 @@ function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
 
-  const onSubmit = (data: IUser) => {
-    setLoading(true);
+  
+    const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/graphql')
+
+  const [loginUserMutation] = useMutation(Login_User,{
+    client,
+  });
+  const route = useRouter();
+ 
+
+  const onSubmit = async (data: IUser) => {
+    try {
+      const {  email, password } = data;
+      
+      const result = await loginUserMutation({
+        variables: {
+          email,
+          password,
+         
+          
+        },
+      });
+      console.log("Mutation result:", result);
+    if (result?.data?.loginUser?.token) {
+      route.push("/blogs");
     
-    console.log("data", data);
+    }
+  } catch (error) {
+    
+    console.error("Error occurred during login:", error);
+    
+  }
+};
+
   
-  
-    setLoading(false);
-    router.push("/userblogs");
-    // if (window.localStorage.getItem("access_token")) {
-    //   router.push("/dashboardpage");
-    // } else {
-    //   router.push("/loginpage");
-    // }
-  };
 
   const handleClick = () => {
      setLoading(true);
-    router.push("/signup");
+    route.push("/signup");
   };
   return (
     <Box
@@ -146,7 +168,7 @@ function LoginPage() {
             <Link
               href="#"
               variant="body2"
-              onClick={() => router.push("/signup")}
+              onClick={() => route.push("/signup")}
             >
               {"Don't have an account? Sign Up"}
 
@@ -169,4 +191,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-

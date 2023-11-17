@@ -1,13 +1,17 @@
-// "use client"
-// import React from 'react'
-// import {SessionProvider} from 'next-auth/react'
+"use client"
+import React, { ReactNode } from 'react'
+import {SessionProvider} from 'next-auth/react'
 
-// const authprovider = (children: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined) => {
-//   return (
-//     <SessionProvider>
-//       {children}
-//     </SessionProvider>
-//   )
-// }
 
-// export default authprovider
+interface Props{
+    children: ReactNode
+}
+const authprovider = (props:Props) => {
+  return (
+    <SessionProvider>
+      {props.children}
+    </SessionProvider>
+  )
+}
+
+export default authprovider
