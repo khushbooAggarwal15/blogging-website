@@ -208,6 +208,5 @@ const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/grap
 
 
   );
-  }
+}
 export default SignUp;
-

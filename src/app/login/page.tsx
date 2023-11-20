@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -34,7 +33,6 @@ const schema = yup.object().shape({
 });
 
 function LoginPage() {
-
   const {
     control,
     handleSubmit,
@@ -150,7 +148,7 @@ function LoginPage() {
             Sign In
           </Button>
 
-<Googlebutton/>
+          <Googlebutton />
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}

@@ -1,24 +1,19 @@
-"use client"
-
-import { signIn, signOut , useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import Button from "@mui/material/Button";
-
 
 
 const googlebutton=()=>{
 
-    const loginwithgoogle=()=>signIn('google',{callbackUrl:'http://localhost:3000/blogs'})
-    return(
-
-        <Button
+    const loginwithgoogle=()=>signIn('google',{callbackUrl:'http://localhost:3000/userblogs'})
+    return <Button
         onClick={loginwithgoogle}
-       type="submit"
+        type="submit"
         fullWidth
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
     >
         Sign with Google
-    </Button>    )
+    </Button>;
           }
 
 export default googlebutton;
