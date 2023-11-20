@@ -7,6 +7,8 @@ import {
   Button,
   Backdrop,
   CircularProgress,
+  Fab,
+  Box,
 } from "@mui/material";
 import React, { useState } from "react";
 import "../public/images/Image.png";
@@ -15,6 +17,7 @@ import Footer from "../components/Footer/footer";
 import pic from "../public/images/Image.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import AddIcon from "@mui/icons-material/Add";
 
 const BlogsPage = () => {
   const defaultTheme = createTheme();
@@ -26,7 +29,7 @@ const BlogsPage = () => {
     route.push("/singleblog");
   };
 
-  const handlebutton = () => {
+  const handlebutton = async () => {
     route.push("/userblogs");
   };
 
@@ -48,12 +51,20 @@ const BlogsPage = () => {
                 fontFamily: "Work Sans",
                 fontWeight: "500",
                 wordWrap: "break-word",
-                marginLeft: "950px",
+                marginLeft: "900px",
                 marginTop: "50px",
                 // marginBottom: "50px",
               }}
             >
-              Create Blogs +
+              Create Blogs
+              <Fab
+                size="small"
+                style={{ marginLeft: "10px" }}
+                color="primary"
+                aria-label="add"
+              >
+                <AddIcon />
+              </Fab>
             </Button>
             <div
               className="Content"
@@ -1619,7 +1630,9 @@ const BlogsPage = () => {
               }}
               open={loading}
             >
-              <CircularProgress color="inherit" />
+              <Box sx={{ display: "flex" }}>
+                <CircularProgress />
+              </Box>
             </Backdrop>
           </main>
         </Container>

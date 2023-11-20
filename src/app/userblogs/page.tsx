@@ -139,13 +139,10 @@ import {
 } from "@mui/material";
 
 interface IData {
-  _id: string;
   content: String;
-  image: String;
   istrending: Boolean;
   shortDescription: String;
   tags: String;
-
   title: String;
 }
 
@@ -166,29 +163,36 @@ function UserBlogsPage() {
 
   const onSubmit = async (data: any) => {
     try {
+      const { title, content, istrending, tags, shortDescription } = data;
       console.log(
         "Post",
         data.title,
         desc,
-        data.isTrending,
+        data.istrending,
         data.tags,
         data.shortDescription
       );
       const result = await addPost({
         variables: {
-          addPostContent2: desc,
-          // addPostImage: image,
-          addPostIsTrending: data.isTrending,
-          addPostShortDescription: data.shortDescription,
-          addPostTags: data.tags,
-          addPostTitle2: data.title,
+          // addPostContent2: desc,
+          // // addPostImage: image,
+          // addPostIsTrending: data.istrending,
+          // addPostShortDescription: data.shortDescription,
+          // addPostTags: data.tags,
+          // addPostTitle2: data.title,
+          title,
+          content,
+          istrending,
+          tags,
+          shortDescription,
         },
       });
+      console.log("result", result);
 
-      console.log("After Mutation Call", result);
-      const newPost = result.data.addPost;
+      // console.log("After Mutation Call", result);
+      // const newPost = result.data.addPost;
 
-      console.log("New post created:", newPost);
+      // console.log("New post created:", newPost);
 
       router.push("/preview");
     } catch (error) {
