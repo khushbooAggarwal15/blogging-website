@@ -1,13 +1,15 @@
 import { gql } from "@apollo/client";
 
-export const GET_USER = gql`
-  query GetUser {
-    user {
-      id
-      title
-      content
-    }
-  }
-`;
+export const Get_Post = gql`
+query GetPost {
+  _id
+  content
+  image
+  istrending
+  shortDescription
+  tags
+  title
+}
+`
 
 //   const { loading, error, data } = useQuery(GET_USER, { client });

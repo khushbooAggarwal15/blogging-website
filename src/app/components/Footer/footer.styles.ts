@@ -22,7 +22,7 @@ export const Height = styled.div`
     gap: 10px;
     justify-content: space-between;
     
-}`;
+`;
 export const AboutContainer = styled.div``;
 export const Button = styled.button`
   width: 100%;
