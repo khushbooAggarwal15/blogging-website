@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import TipTap from "../components/tiptapEditor/tiptap";
@@ -72,12 +74,24 @@ function UserBlogsPage() {
     }
   };
 
+  const handleButton = () => {
+    router.push("/blogs");
+  };
+
   return (
     <>
       <Header />
+      <Button
+        style={{
+          fontSize: "18px",
+        }}
+        onClick={handleButton}
+      >
+        Back
+      </Button>
       <h1
         style={{
-          width: "100%",
+          // width: "100%",
           textAlign: "center",
           padding: "4px",
           background: "beige",
@@ -174,6 +188,7 @@ function UserBlogsPage() {
         />
 
         <label>
+          <br />
           <Controller
             name="content"
             control={control}
@@ -183,19 +198,24 @@ function UserBlogsPage() {
           />
         </label>
         <br />
-
         <div
           style={{ width: "100%", textAlign: "center", marginBottom: "20px" }}
         >
-          <button
+          <Button
+            className="Button"
+            variant="contained"
             type="submit"
             style={{
-              width: "20em",
-              borderRadius: "8px",
-              border: "none",
-              backgroundColor: "#4b6bfb",
+              boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
+              borderRadius: 12,
               color: "white",
-              padding: "10px",
+              fontSize: 18,
+              fontFamily: "Work Sans",
+              fontWeight: "500",
+              wordWrap: "break-word",
+              marginLeft: 0,
+              marginTop: "10px",
+              marginBottom: "50px",
             }}
           >
             Preview

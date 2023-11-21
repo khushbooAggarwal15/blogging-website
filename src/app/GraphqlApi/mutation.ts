@@ -26,4 +26,15 @@ export const ADD_POST = gql`
       istrending
     }
   }
-`;
+}
+`
+
+export const Login_User = gql`
+mutation LoginUser($email: String!, $password: String!) {
+  loginUser(email: $email, password: $password) {
+    success
+    message
+    token
+  }
+}`
+

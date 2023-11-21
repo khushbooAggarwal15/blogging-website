@@ -4,7 +4,7 @@ import React from "react";
 
 const googlebutton = () => {
   const loginwithgoogle = () =>
-    signIn("google", { callbackUrl: "http://localhost:3000/userblogs" });
+    signIn("google", { callbackUrl: "http://localhost:3000/blogs" });
   return (
     <Button
       onClick={loginwithgoogle}
@@ -13,7 +13,7 @@ const googlebutton = () => {
       variant="contained"
       sx={{ mt: 3, mb: 2 }}
     >
-      Sign with Google
+      Sign In with Google
     </Button>
   );
 };

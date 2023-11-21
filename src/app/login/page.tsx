@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -15,7 +14,10 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { CircularProgress, Backdrop } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import Googlebutton from '../components/googlebutton/googlebutton'
+import Googlebutton from "../components/googlebutton/googlebutton";
+import createApolloClient from "@/GraphqlApi/apolloclient";
+import { Login_User } from "@/GraphqlApi/mutation";
+import { useMutation } from "@apollo/client";
 
 interface IUser {
   email: string;
@@ -31,7 +33,6 @@ const schema = yup.object().shape({
 });
 
 function LoginPage() {
-
   const {
     control,
     handleSubmit,
@@ -41,27 +42,42 @@ function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
+  const client = createApolloClient(
+    "https://244b-103-179-9-163.ngrok-free.app/graphql"
+  );
 
-  const onSubmit = (data: IUser) => {
-    setLoading(true);
-    
-    console.log("data", data);
-  
-  
-    setLoading(false);
-    router.push("/userblogs");
-    // if (window.localStorage.getItem("access_token")) {
-    //   router.push("/dashboardpage");
-    // } else {
-    //   router.push("/loginpage");
-    // }
+  const [loginUserMutation] = useMutation(Login_User, {
+    client,
+  });
+
+  const route = useRouter();
+
+  const onSubmit = async (data: IUser) => {
+    try {
+      const { email, password } = data;
+
+      const result = await loginUserMutation({
+        variables: {
+          email,
+          password,
+        },
+      });
+      console.log("result", result);
+
+      if (result?.data?.loginUser?.token) {
+        route.push("/blogs");
+      }
+    } catch (error) {
+      console.error("Error occurred during registration:", error);
+      // console.log("Mutation result:", result);
+    }
   };
 
-  const handleClick = () => {
-     setLoading(true);
-    router.push("/signup");
-  };
+  // const handleClick = () => {
+  //   setLoading(true);
+  //   router.push("/signup");
+  // };
+
   return (
     <Box
       sx={{
@@ -128,7 +144,7 @@ function LoginPage() {
             Sign In
           </Button>
 
-<Googlebutton/>
+          <Googlebutton />
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}
@@ -146,7 +162,7 @@ function LoginPage() {
             <Link
               href="#"
               variant="body2"
-              onClick={() => router.push("/signup")}
+              onClick={() => route.push("/signup")}
             >
               {"Don't have an account? Sign Up"}
 
@@ -169,4 +185,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
