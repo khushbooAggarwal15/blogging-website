@@ -1,8 +1,8 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-const createApolloClient = (endpoint: any) => {
+const createApolloClient = (uri: string) => {
   return new ApolloClient({
-    uri: endpoint,
+    uri,
     cache: new InMemoryCache(),
   });
 };

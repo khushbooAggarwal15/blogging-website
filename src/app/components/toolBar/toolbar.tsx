@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   FaBold,
   FaItalic,
@@ -10,9 +10,65 @@ import {
   FaListUl,
   FaQuoteLeft,
   FaUnderline,
+  FaImage,
 } from "react-icons/fa";
+import { Cloudinary } from "@cloudinary/url-gen";
 
-const ToolBar = ({ editor }: any) => {
+const ToolBar = ({ editor, setImage }: any) => {
+  const addImage = useCallback(async () => {
+    const cloudName = "dffjofsgv";
+    const uploadPreset = "my-uploads";
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.style.display = "none";
+
+    document.body.appendChild(fileInput);
+
+    fileInput.click();
+
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files?.[0];
+
+      if (file) {
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append("upload_preset", uploadPreset);
+
+          const cloudinaryResponse = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          if (cloudinaryResponse.ok) {
+            const cloudinaryResult = await cloudinaryResponse.json();
+            setImage(cloudinaryResult.secure_url);
+            editor
+              .chain()
+              .focus()
+              .setImage({ src: cloudinaryResult.secure_url })
+              .run();
+            console.log("Cloudinary File URL:", cloudinaryResult.secure_url);
+          } else {
+            console.error(
+              "Error uploading image to Cloudinary:",
+              cloudinaryResponse.statusText
+            );
+          }
+        } catch (error) {
+          console.error("Error uploading image to Cloudinary:", error);
+        }
+      }
+
+      document.body.removeChild(fileInput);
+    });
+  }, [setImage, editor]);
+
   return (
     <div className="toolbar">
       <div>
@@ -72,6 +128,9 @@ const ToolBar = ({ editor }: any) => {
           className={editor.isActive("blockquote") ? "is-active" : ""}
         >
           <FaQuoteLeft />
+        </button>
+        <button onClick={addImage}>
+          <FaImage />
         </button>
       </div>
       <div>
