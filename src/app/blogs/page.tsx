@@ -10,7 +10,7 @@ import {
   Fab,
   Box,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../public/images/Image.png";
 import Header from "../components/Header/header";
 import Footer from "../components/Footer/footer";
@@ -18,54 +18,40 @@ import pic from "../public/images/Image.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AddIcon from "@mui/icons-material/Add";
+import createApolloClient from "@/GraphqlApi/apolloclient";
+import { useQuery } from "@apollo/client";
+import { GET_POSTS } from "@/GraphqlApi/queries";
+import Link from "next/link";
 
+const client = createApolloClient(
+  "https://b357-115-240-127-98.ngrok-free.app/graphql"
+);
 const BlogsPage = () => {
   const defaultTheme = createTheme();
   const route = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleClick = async () => {
-    await setLoading(true);
-    route.push("/singleblog");
-  };
-
   const handlebutton = async () => {
     route.push("/userblogs");
   };
+  const { error, data, refetch } = useQuery(GET_POSTS, { client });
 
+  useEffect(() => {
+    if (error) {
+      console.error("Error fetching posts:", error);
+    } else if (data) {
+      refetch();
+      console.log("Fetched posts:", data);
+    } else {
+      console.log("No posts");
+    }
+  }, [refetch, error, data]);
   return (
     <>
       <Header />
       <ThemeProvider theme={defaultTheme}>
         <Container maxWidth="lg">
           <main>
-            <Button
-              className="Button"
-              variant="text"
-              onClick={handlebutton}
-              style={{
-                boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                borderRadius: 12,
-                color: "#696A75",
-                fontSize: 18,
-                fontFamily: "Work Sans",
-                fontWeight: "500",
-                wordWrap: "break-word",
-                marginLeft: "900px",
-                marginTop: "50px",
-                // marginBottom: "50px",
-              }}
-            >
-              Create Blogs
-              <Fab
-                size="small"
-                style={{ marginLeft: "10px" }}
-                color="primary"
-                aria-label="add"
-              >
-                <AddIcon />
-              </Fab>
-            </Button>
             <div
               className="Content"
               style={{
@@ -145,7 +131,7 @@ const BlogsPage = () => {
                         wordWrap: "break-word",
                       }}
                     >
-                      Technology
+                      {data?.posts[0]?.tags}
                     </div>
                   </div>
                   <div
@@ -159,8 +145,7 @@ const BlogsPage = () => {
                       wordWrap: "break-word",
                     }}
                   >
-                    The Impact of Technology on the Workplace: How Technology is
-                    Changing
+                    {data?.posts[0]?.title}
                   </div>
                 </div>
                 <div
@@ -184,7 +169,7 @@ const BlogsPage = () => {
                     <img
                       className="Image"
                       style={{ width: 36, height: 36, borderRadius: 28 }}
-                      src="https://via.placeholder.com/36x36"
+                      src={data?.posts[0]?.image}
                     />
                     <div
                       className="Author"
@@ -196,20 +181,10 @@ const BlogsPage = () => {
                         wordWrap: "break-word",
                       }}
                     >
-                      Jason Francisco
+                      {data?.posts[0]?.istrending == true
+                        ? "Trending"
+                        : "Not Trending"}
                     </div>
-                  </div>
-                  <div
-                    className="Date"
-                    style={{
-                      color: "#97989F",
-                      fontSize: 16,
-                      fontFamily: "Work Sans",
-                      fontWeight: "400",
-                      wordWrap: "break-word",
-                    }}
-                  >
-                    August 20, 2022
                   </div>
                 </div>
               </div>
@@ -229,1381 +204,143 @@ const BlogsPage = () => {
               Latest Post
             </div>
 
+            {data?.posts ? (
+              <div
+                style={{
+                  display: " grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "20px",
+                  width: "100%",
+                }}
+              >
+                {data.posts.map((post: any) => (
+                  <div key={post._id}>
+                    <div
+                      className="MPostCardGrid"
+                      style={{
+                        padding: 16,
+                        background: "white",
+                        borderRadius: 12,
+                        overflow: "hidden",
+                        border: "1px #E8E8EA solid",
+                        boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 16,
+                        display: "inline-flex",
+                        width: "23em",
+                        height: "29em",
+                      }}
+                    >
+                      <img
+                        className="Image"
+                        style={{
+                          width: "100%",
+                          height: 150,
+                          borderRadius: 12,
+                        }}
+                        src={post?.image}
+                      />
+                      <div
+                        className="Content"
+                        style={{
+                          alignSelf: "stretch",
+
+                          padding: 8,
+                          flexDirection: "column",
+                          justifyContent: "flex-start",
+                          alignItems: "flex-start",
+                          gap: 20,
+                          display: "flex",
+                        }}
+                      >
+                        <div
+                          className="Heading"
+                          style={{
+                            alignSelf: "stretch",
+
+                            flexDirection: "column",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-start",
+                            gap: 16,
+                            display: "flex",
+                          }}
+                        >
+                          <div
+                            className="ABadge"
+                            style={{
+                              paddingLeft: 10,
+                              paddingRight: 10,
+                              paddingTop: 4,
+                              paddingBottom: 4,
+                              background: "rgba(75, 107, 251, 0.05)",
+                              borderRadius: 6,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: 4,
+                              display: "inline-flex",
+                            }}
+                          >
+                            <div
+                              className="Text"
+                              style={{
+                                color: "#4B6BFB",
+                                fontSize: 14,
+                                fontFamily: "Work Sans",
+                                fontWeight: "500",
+                                wordWrap: "break-word",
+                              }}
+                            >
+                              {post?.tags}
+                            </div>
+                          </div>
+                          <div
+                            className="Title"
+                            style={{
+                              alignSelf: "stretch",
+                              color: "#181A2A",
+                              fontSize: 24,
+                              fontFamily: "Work Sans",
+                              fontWeight: "600",
+                              wordWrap: "break-word",
+                            }}
+                          >
+                            {post?.title}
+                          </div>
+                        </div>
+                        <div
+                          className="Author"
+                          style={{
+                            color: "#97989F",
+                            fontSize: 16,
+                            fontFamily: "Work Sans",
+                            fontWeight: "500",
+                            wordWrap: "break-word",
+                          }}
+                        >
+                          {post.istrending == true
+                            ? "Trending"
+                            : "Not Trending"}
+                        </div>
+                      </div>
+                      <Link
+                        href={{
+                          pathname: "/singleblog",
+                          query: { post: JSON.stringify(post) },
+                        }}
+                      >
+                        <Button variant="text">Continue Reading</Button>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No posts</p>
+            )}
+
             {/* Rows --- >>>>  */}
-
-            <div
-              className="Row"
-              style={{
-                width: 1216,
-                height: 488,
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                gap: 20,
-                display: "inline-flex",
-              }}
-            >
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Tracey Wilson
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Jason Francisco
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Elizabeth Slavin
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-            </div>
-
-            <div
-              className="Row"
-              style={{
-                width: 1216,
-                height: 488,
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                gap: 20,
-                display: "inline-flex",
-                marginTop: "80px",
-              }}
-            >
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Tracey Wilson
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Jason Francisco
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Elizabeth Slavin
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-            </div>
-
-            <div
-              className="Row"
-              style={{
-                width: 1216,
-                height: 488,
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                gap: 20,
-                display: "inline-flex",
-                marginTop: "80px",
-              }}
-            >
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Tracey Wilson
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Jason Francisco
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-              <div
-                className="MPostCardGrid"
-                style={{
-                  width: 392,
-                  padding: 16,
-                  background: "white",
-                  borderRadius: 12,
-                  overflow: "hidden",
-                  border: "1px #E8E8EA solid",
-                  boxShadow: "0px 12px 24px -6px rgba(24, 26, 42, 0.12)",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 16,
-                  display: "inline-flex",
-                }}
-              >
-                <img
-                  className="Rectangle38"
-                  style={{ width: 360, height: 240, borderRadius: 6 }}
-                  src="https://source.unsplash.com/random?wallpapers"
-                />
-                <div
-                  className="Content"
-                  style={{
-                    alignSelf: "stretch",
-                    height: 200,
-                    padding: 8,
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    gap: 20,
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    className="Heading"
-                    style={{
-                      alignSelf: "stretch",
-                      height: 128,
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: 16,
-                      display: "flex",
-                    }}
-                  >
-                    <div
-                      className="ABadge"
-                      style={{
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingTop: 4,
-                        paddingBottom: 4,
-                        background: "rgba(75, 107, 251, 0.05)",
-                        borderRadius: 6,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 4,
-                        display: "inline-flex",
-                      }}
-                    >
-                      <div
-                        className="Text"
-                        style={{
-                          color: "#4B6BFB",
-                          fontSize: 14,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Technology
-                      </div>
-                    </div>
-                    <div
-                      className="Title"
-                      style={{
-                        alignSelf: "stretch",
-                        color: "#181A2A",
-                        fontSize: 24,
-                        fontFamily: "Work Sans",
-                        fontWeight: "600",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      The Impact of Technology on the Workplace: How Technology
-                      is Changing
-                    </div>
-                  </div>
-                  <div
-                    className="ShortInfo"
-                    style={{
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: 20,
-                      display: "inline-flex",
-                    }}
-                  >
-                    <div
-                      className="AAuthor"
-                      style={{
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        gap: 12,
-                        display: "flex",
-                      }}
-                    >
-                      <img
-                        className="Image"
-                        style={{ width: 36, height: 36, borderRadius: 28 }}
-                        src="https://via.placeholder.com/36x36"
-                      />
-                      <div
-                        className="Author"
-                        style={{
-                          color: "#97989F",
-                          fontSize: 16,
-                          fontFamily: "Work Sans",
-                          fontWeight: "500",
-                          wordWrap: "break-word",
-                        }}
-                      >
-                        Elizabeth Slavin
-                      </div>
-                    </div>
-                    <div
-                      className="Date"
-                      style={{
-                        color: "#97989F",
-                        fontSize: 16,
-                        fontFamily: "Work Sans",
-                        fontWeight: "400",
-                        wordWrap: "break-word",
-                      }}
-                    >
-                      August 20, 2022
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleClick}
-                  variant="text"
-                  style={{ marginLeft: "180px" }}
-                >
-                  Containue Reading
-                </Button>
-              </div>
-            </div>
 
             <Button
               className="Button"

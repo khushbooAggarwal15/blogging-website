@@ -67,7 +67,7 @@ const ToolBar = ({ editor, setImage }: any) => {
 
       document.body.removeChild(fileInput);
     });
-  }, [setImage, editor]);
+  }, [setImage]);
 
   return (
     <div className="toolbar">
