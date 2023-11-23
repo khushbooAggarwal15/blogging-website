@@ -27,9 +27,7 @@ function header() {
           <Link href="/userblogs">Create Blog</Link>
         </ListItem>
 
-        <ListItem>
-          <Link href="/singleblog"> Single Post</Link>
-        </ListItem>
+        <ListItem>Single Post</ListItem>
         <ListItem>Pages</ListItem>
         <ListItem>Contact</ListItem>
       </ListContainer>
@@ -38,7 +36,7 @@ function header() {
         <SearchImage src={search} alt={"logo"} width={0} height={20} />
       </SearchContainer>
 
-      <Accountmenu/>
+      <Accountmenu />
     </Container>
   );
 }
