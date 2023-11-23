@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+  "use client";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
@@ -14,18 +14,21 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useMutation } from "@apollo/client";
-import { Register_User } from "@/GraphqlApi/mutation";
+import { REGISTER_USER_MUTATION } from "@/GraphqlApi/mutation";
 
 import createApolloClient from "@/GraphqlApi/apolloclient";
+import { Alert, Backdrop, CircularProgress } from "@mui/material";
 
 interface IUser {
-  username: string;
+  username:string;
   email: string;
   password: string;
 }
 
 const schema = yup.object().shape({
-  username: yup.string().required("Please enter username"),
+  username: yup
+  .string()
+  .required("Please enter username"),
 
   email: yup
     .string()
@@ -33,6 +36,8 @@ const schema = yup.object().shape({
     .required("Email is required"),
   password: yup.string().required("Please provide a valid password"),
 });
+
+
 
 function SignUp() {
   const {
@@ -43,38 +48,50 @@ function SignUp() {
     resolver: yupResolver(schema),
   });
 
-  const client = createApolloClient(
-    "https://244b-103-179-9-163.ngrok-free.app/graphql"
-  );
 
-  const [registerUserMutation] = useMutation(Register_User, {
+  const [successAlert, setSuccessAlert] = useState(false);
+const [loading, setLoading] = useState(false);
+
+
+const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/graphql')
+
+  const [registerUserMutation] = useMutation(REGISTER_USER_MUTATION,{
     client,
   });
-  const route = useRouter();
+  const router = useRouter();
+ 
 
   const onSubmit = async (data: IUser) => {
     try {
+      setLoading(true);
       const { username, email, password } = data;
-
       const result = await registerUserMutation({
         variables: {
           username,
           password,
           email,
+          
         },
       });
-      console.log("result", result);
-
-      if (result?.data?.registerUser) {
-        route.push("/login");
-      }
-    } catch (error) {
-      console.error("Error occurred during registration:", error);
-      // console.log("Mutation result:", result);
+      console.log("Mutation result:", result);
+    if (result?.data?.registerUser) {
+      setSuccessAlert(true);
+        setLoading(false);
+        setTimeout(() => {
+          router.push("/login");
+        }, 3000);
     }
-  };
+  } catch (error) {
+    setLoading(false);
+    console.error("Error occurred during registration:", error);
+    
+  }
+};
+
+  
 
   return (
+    
     <Box
       sx={{
         marginTop: 8,
@@ -83,6 +100,16 @@ function SignUp() {
         alignItems: "center",
       }}
     >
+            {/* {loading && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <CircularProgress />
+        </Box>
+      )} */}
+      {successAlert && (
+        <Alert severity="success" onClose={() => setSuccessAlert(false)}>
+          Signed up successfully! Redirecting to login...
+        </Alert>
+      )}
       <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
         <LockOutlinedIcon />
       </Avatar>
@@ -91,7 +118,8 @@ function SignUp() {
       </Typography>
       <Container component="main" maxWidth="xs">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Controller
+
+        <Controller
             control={control}
             name="username"
             render={({ field }) => (
@@ -110,7 +138,7 @@ function SignUp() {
           <p style={{ color: "red", height: "16px" }}>
             {errors?.username?.message}
           </p>
-
+        
           <Controller
             control={control}
             name="password"
@@ -131,6 +159,7 @@ function SignUp() {
           <p style={{ color: "red", height: "16px" }}>
             {errors?.password?.message}
           </p>
+
 
           <Controller
             control={control}
@@ -160,17 +189,30 @@ function SignUp() {
           >
             Sign Up
           </Button>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
 
           {/* <Grid container> */}
           <Grid container justifyContent="right">
-            <Link href="#" variant="body2" onClick={() => route.push("/login")}>
+            <Link
+              href="#"
+              variant="body2"
+              onClick={() => router.push("/login")}
+            >
               {"Already have account? Sign In"}
             </Link>
             {/* </Grid> */}
           </Grid>
         </form>
       </Container>
+
     </Box>
+
+
   );
 }
 export default SignUp;

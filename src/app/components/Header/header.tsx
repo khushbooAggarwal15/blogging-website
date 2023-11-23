@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import search from "../../public/images/search-outline.png";
+import Accountmenu from "../accountmenu/accountmenu";
 import Link from "next/link";
 function header() {
   return (
@@ -36,6 +37,8 @@ function header() {
         <Input type="search" placeholder="Search" />
         <SearchImage src={search} alt={"logo"} width={0} height={20} />
       </SearchContainer>
+
+      <Accountmenu/>
     </Container>
   );
 }

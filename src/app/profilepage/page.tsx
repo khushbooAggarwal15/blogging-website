@@ -2,9 +2,15 @@
 import React from "react";
 import Header from "../components/Header/header";
 import Footer from "../components/Footer/footer";
-import { Container } from "@mui/material";
+import { Avatar, Container } from "@mui/material";
+import { useSession } from "next-auth/react";
 
 const Profile = () => {
+
+  const {data:session}=useSession();
+ 
+
+
   return (
     <>
       <Header />
@@ -46,11 +52,10 @@ const Profile = () => {
                 display: "inline-flex",
               }}
             >
-              <img
-                className="Image"
-                style={{ width: 64, height: 64, borderRadius: 80 }}
-                src="https://via.placeholder.com/64x64"
-              />
+              
+               <Avatar sx={{ width: 64, height: 64,borderRadius:80 }}
+               src="/broken-image.jpg" />
+               
               <div
                 className="Info"
                 style={{
@@ -70,7 +75,7 @@ const Profile = () => {
                     wordWrap: "break-word",
                   }}
                 >
-                  Jonathan Doe
+                {session?.user?.name}
                 </div>
                 <div
                   className="CollaboratorEditor"
@@ -82,7 +87,7 @@ const Profile = () => {
                     wordWrap: "break-word",
                   }}
                 >
-                  Collaborator & Editor
+                 {session?.user?.email}
                 </div>
               </div>
             </div>
@@ -111,4 +116,25 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+ export default Profile;
+// const {data:session}=useSession();
+// console.log(session)
+
+//     if (session && session.user)
+//     {
+//         return(
+//             <div>
+//             <p>{session.user.name}</p>
+//             <Button
+//         onClick={()=>signOut()}
+//        type="submit"
+//         fullWidth
+//         variant="contained"
+//         sx={{ mt: 3, mb: 2 }}
+//     >
+//         Sign Out
+//     </Button>
+            
+//             </div>
+//         )
+//     }
