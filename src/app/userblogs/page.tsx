@@ -31,7 +31,7 @@ function UserBlogsPage() {
   const [image, setImage] = useState("");
 
   const client = createApolloClient(
-    "https://b357-115-240-127-98.ngrok-free.app/graphql"
+    "https://certainly-grown-anchovy.ngrok-free.app/graphql"
   );
 
   const [addPost] = useMutation(ADD_POST, {

@@ -16,26 +16,27 @@ import Header from "../components/Header/header";
 import Footer from "../components/Footer/footer";
 import pic from "../public/images/Image.png";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import AddIcon from "@mui/icons-material/Add";
+
 import createApolloClient from "@/GraphqlApi/apolloclient";
 import { useQuery } from "@apollo/client";
 import { GET_POSTS } from "@/GraphqlApi/queries";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const client = createApolloClient(
-  "https://b357-115-240-127-98.ngrok-free.app/graphql"
+  "https://certainly-grown-anchovy.ngrok-free.app/graphql"
 );
 const BlogsPage = () => {
+  const router = useRouter();
   const defaultTheme = createTheme();
-  const route = useRouter();
+
   const [loading, setLoading] = useState(false);
 
-  const handlebutton = async () => {
-    route.push("/userblogs");
-  };
   const { error, data, refetch } = useQuery(GET_POSTS, { client });
-
+  const handleClick = () => {
+    console.log(data);
+    window.localStorage.setItem("myData", JSON.stringify(data));
+    router.push("/singleblog");
+  };
   useEffect(() => {
     if (error) {
       console.error("Error fetching posts:", error);
@@ -324,14 +325,10 @@ const BlogsPage = () => {
                             : "Not Trending"}
                         </div>
                       </div>
-                      <Link
-                        href={{
-                          pathname: "/singleblog",
-                          query: { post: JSON.stringify(post) },
-                        }}
-                      >
-                        <Button variant="text">Continue Reading</Button>
-                      </Link>
+
+                      <Button variant="text" onClick={handleClick}>
+                        Continue Reading
+                      </Button>
                     </div>
                   </div>
                 ))}

@@ -58,7 +58,7 @@ import Footer from "../components/Footer/footer";
 import React from "react";
 
 const client = createApolloClient(
-  "https://b357-115-240-127-98.ngrok-free.app/graphql"
+  "https://certainly-grown-anchovy.ngrok-free.app/graphql"
 );
 const page = () => {
   const { error, data, loading, refetch } = useQuery(GET_POSTS, { client });

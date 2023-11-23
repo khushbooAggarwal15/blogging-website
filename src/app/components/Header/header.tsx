@@ -26,7 +26,9 @@ function header() {
           <Link href="/userblogs">Create Blog</Link>
         </ListItem>
 
-        <ListItem>Single Post</ListItem>
+        <ListItem>
+          <Link href="/singleblog"> Single Post</Link>
+        </ListItem>
         <ListItem>Pages</ListItem>
         <ListItem>Contact</ListItem>
       </ListContainer>
