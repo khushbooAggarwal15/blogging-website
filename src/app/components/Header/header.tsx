@@ -11,15 +11,25 @@ import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import search from "../../public/images/search-outline.png";
 import Accountmenu from "../accountmenu/accountmenu";
+import Link from "next/link";
 function header() {
   return (
     <Container>
       <Image src={logo} alt={"logo"} width={150} height={50} />
 
       <ListContainer>
-        <ListItem>Home</ListItem>
-        <ListItem> Blog</ListItem>
-        <ListItem>Single Post</ListItem>
+        <ListItem>
+          {" "}
+          <Link href="/blogs"> Home</Link>
+        </ListItem>
+        <ListItem>
+          {" "}
+          <Link href="/userblogs">Create Blog</Link>
+        </ListItem>
+
+        <ListItem>
+          <Link href="/singleblog"> Single Post</Link>
+        </ListItem>
         <ListItem>Pages</ListItem>
         <ListItem>Contact</ListItem>
       </ListContainer>
