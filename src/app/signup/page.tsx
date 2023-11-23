@@ -1,4 +1,4 @@
-  "use client";
+"use client";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -20,15 +20,13 @@ import createApolloClient from "@/GraphqlApi/apolloclient";
 import { Alert, Backdrop, CircularProgress } from "@mui/material";
 
 interface IUser {
-  username:string;
+  username: string;
   email: string;
   password: string;
 }
 
 const schema = yup.object().shape({
-  username: yup
-  .string()
-  .required("Please enter username"),
+  username: yup.string().required("Please enter username"),
 
   email: yup
     .string()
@@ -36,8 +34,6 @@ const schema = yup.object().shape({
     .required("Email is required"),
   password: yup.string().required("Please provide a valid password"),
 });
-
-
 
 function SignUp() {
   const {
@@ -48,18 +44,17 @@ function SignUp() {
     resolver: yupResolver(schema),
   });
 
-
   const [successAlert, setSuccessAlert] = useState(false);
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const client = createApolloClient(
+    "https://b357-115-240-127-98.ngrok-free.app/graphql"
+  );
 
-const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/graphql')
-
-  const [registerUserMutation] = useMutation(REGISTER_USER_MUTATION,{
+  const [registerUserMutation] = useMutation(REGISTER_USER_MUTATION, {
     client,
   });
   const router = useRouter();
- 
 
   const onSubmit = async (data: IUser) => {
     try {
@@ -70,28 +65,23 @@ const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/gra
           username,
           password,
           email,
-          
         },
       });
       console.log("Mutation result:", result);
-    if (result?.data?.registerUser) {
-      setSuccessAlert(true);
+      if (result?.data?.registerUser) {
+        setSuccessAlert(true);
         setLoading(false);
         setTimeout(() => {
           router.push("/login");
         }, 3000);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error occurred during registration:", error);
     }
-  } catch (error) {
-    setLoading(false);
-    console.error("Error occurred during registration:", error);
-    
-  }
-};
-
-  
+  };
 
   return (
-    
     <Box
       sx={{
         marginTop: 8,
@@ -100,7 +90,7 @@ const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/gra
         alignItems: "center",
       }}
     >
-            {/* {loading && (
+      {/* {loading && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
           <CircularProgress />
         </Box>
@@ -118,8 +108,7 @@ const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/gra
       </Typography>
       <Container component="main" maxWidth="xs">
         <form onSubmit={handleSubmit(onSubmit)}>
-
-        <Controller
+          <Controller
             control={control}
             name="username"
             render={({ field }) => (
@@ -138,7 +127,7 @@ const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/gra
           <p style={{ color: "red", height: "16px" }}>
             {errors?.username?.message}
           </p>
-        
+
           <Controller
             control={control}
             name="password"
@@ -159,7 +148,6 @@ const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/gra
           <p style={{ color: "red", height: "16px" }}>
             {errors?.password?.message}
           </p>
-
 
           <Controller
             control={control}
@@ -209,10 +197,7 @@ const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/gra
           </Grid>
         </form>
       </Container>
-
     </Box>
-
-
   );
 }
 export default SignUp;
