@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import apolloclient from '@/GraphqlApi/apolloclient'
+
 
 
 
@@ -14,13 +14,6 @@ import apolloclient from '@/GraphqlApi/apolloclient'
 //   }
 // `
 
-// export const Add_Post = gql`
-// mutation AddPost($title: String!, $content: String!) {
-//   addPost(title: $title, content: $content) {
-    
-//   }
-// }
-// `
 
 export const Add_Post = gql`
 mutation AddPost($title: String!, $content: String!, $shortDescription: String!, $tags: String!, $istrending: Boolean!, $image: String!) {
@@ -31,7 +24,8 @@ mutation AddPost($title: String!, $content: String!, $shortDescription: String!,
     tags
     title
   }
-`;
+}
+`
 
 export const REGISTER_USER_MUTATION = gql`
 

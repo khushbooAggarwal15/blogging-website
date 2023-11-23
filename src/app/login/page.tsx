@@ -44,7 +44,7 @@ function LoginPage() {
 
 
   
-    const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/graphql')
+    const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/graphql')
 
   const [loginUserMutation] = useMutation(Login_User,{
     client,
@@ -53,6 +53,7 @@ function LoginPage() {
  
 
   const onSubmit = async (data: IUser) => {
+      setLoading(true)
     try {
       const {  email, password } = data;
       
@@ -148,7 +149,7 @@ function LoginPage() {
             Sign In
           </Button>
 
-          <Googlebutton />
+          
           <Backdrop
             sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}
@@ -156,33 +157,26 @@ function LoginPage() {
             <CircularProgress color="inherit" />
           </Backdrop>
 
-          {/* <Grid container> */}
+          <Grid container justifyContent="space-between">
           <Grid item>
             <Link href="#" variant="body2">
               {"Forgot password?  "}
             </Link>
+
           </Grid>
-          <Grid container justifyContent="right">
-            <Link
+          <Grid item>
+          <Link 
               href="#"
               variant="body2"
-              onClick={() => route.push("/signup")}
+              
+              onClick={handleClick}
             >
               {"Don't have an account? Sign Up"}
-
-              {/* <Backdrop
-                sx={{
-                  color: "#fff",
-                  zIndex: (theme) => theme.zIndex.drawer + 1,
-                }}
-                open={loading}
-              >
-                <CircularProgress color="inherit" />
-              </Backdrop> */}
-            </Link>
-            {/* </Grid> */}
+          </Link>
+          </Grid>
           </Grid>
         </form>
+        <Googlebutton />
       </Container>
     </Box>
   );

@@ -17,7 +17,7 @@ import { useMutation } from "@apollo/client";
 import { REGISTER_USER_MUTATION } from "@/GraphqlApi/mutation";
 
 import createApolloClient from "@/GraphqlApi/apolloclient";
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, Backdrop, CircularProgress } from "@mui/material";
 
 interface IUser {
   username:string;
@@ -50,10 +50,10 @@ function SignUp() {
 
 
   const [successAlert, setSuccessAlert] = useState(false);
-const [isLoading, setIsLoading] = useState(false);
+const [loading, setLoading] = useState(false);
 
 
-const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/graphql')
+const client= createApolloClient('https://b357-115-240-127-98.ngrok-free.app/graphql')
 
   const [registerUserMutation] = useMutation(REGISTER_USER_MUTATION,{
     client,
@@ -63,7 +63,7 @@ const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/grap
 
   const onSubmit = async (data: IUser) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const { username, email, password } = data;
       const result = await registerUserMutation({
         variables: {
@@ -76,13 +76,13 @@ const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/grap
       console.log("Mutation result:", result);
     if (result?.data?.registerUser) {
       setSuccessAlert(true);
-        setIsLoading(false);
+        setLoading(false);
         setTimeout(() => {
           router.push("/login");
         }, 3000);
     }
   } catch (error) {
-    setIsLoading(false);
+    setLoading(false);
     console.error("Error occurred during registration:", error);
     
   }
@@ -100,11 +100,11 @@ const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/grap
         alignItems: "center",
       }}
     >
-            {isLoading && (
+            {/* {loading && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
           <CircularProgress />
         </Box>
-      )}
+      )} */}
       {successAlert && (
         <Alert severity="success" onClose={() => setSuccessAlert(false)}>
           Signed up successfully! Redirecting to login...
@@ -189,6 +189,12 @@ const client= createApolloClient('https://244b-103-179-9-163.ngrok-free.app/grap
           >
             Sign Up
           </Button>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
 
           {/* <Grid container> */}
           <Grid container justifyContent="right">

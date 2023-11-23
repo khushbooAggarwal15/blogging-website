@@ -12,7 +12,8 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -20,6 +21,17 @@ export default function AccountMenu() {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const router =useRouter()
+
+   const handleProfile=()=>
+   {
+    router.push("/profilepage")
+
+   }
+
+
+   const {data:session}=useSession()
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -27,7 +39,7 @@ export default function AccountMenu() {
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
        
-       
+      
           <IconButton
             onClick={handleClick}
             size="small"
@@ -35,8 +47,11 @@ export default function AccountMenu() {
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
-          >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            
+          >  {session?.user?.name}
+          <Avatar sx={{marginLeft:2}}
+          src="/broken-image.jpg" />
+            
           </IconButton>
         
       </Box>
@@ -75,8 +90,8 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+        <MenuItem onClick={handleProfile}>
+          <Avatar />  My Profile
         </MenuItem>
        
         <Divider />

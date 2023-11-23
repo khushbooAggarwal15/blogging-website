@@ -479,7 +479,7 @@ const BlogsPage = () => {
                     >
                       The Impact of Technology on the Workplace: How Technology
                       is Changing
-                    </div>
+                    </div>   
                   </div>
                   <div
                     className="ShortInfo"
