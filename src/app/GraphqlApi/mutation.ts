@@ -36,14 +36,14 @@ export const Login_User = gql`
     }
   }
 `;
-export const REGISTER_USER_MUTATION = gql`
- mutation RegisterUser($email: String!, $password: String!, $username: String!) {
-  registerUser(email: $email, password: $password, username: $username) {
-    message
-    success
-    user {
-      
-    }
-  }
-}
-`;
+// export const REGISTER_USER_MUTATION = gql`
+//  mutation RegisterUser($email: String!, $password: String!, $username: String!) {
+//   registerUser(email: $email, password: $password, username: $username) {
+//     message
+//     success
+//     user {
+
+//     }
+//   }
+// }
+// `;

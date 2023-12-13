@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { Get_Post } from "../GraphqlApi/queries";
+import { GET_POSTS } from "../GraphqlApi/queries";
 import { useQuery } from "@apollo/client";
 import createApolloClient from "../GraphqlApi/apolloclient";
 
@@ -8,7 +8,7 @@ const client = createApolloClient(
   "https://244b-103-179-9-163.ngrok-free.app/graphql"
 );
 function GetBlog() {
-  const { error, data, loading } = useQuery(Get_Post, { client });
+  const { error, data, loading } = useQuery(GET_POSTS, { client });
 
   useEffect(() => {
     if (error) {
@@ -33,14 +33,6 @@ function GetBlog() {
               <p>{post.content}</p>
             </div>
           ))}
-          {/* {
-          data.posts.length > 0 && (
-            <div key={data.posts[data.posts.length - 1]._id}>
-              <h2>{data.posts[data.posts.length - 1].title}</h2>
-              <img src={data.posts[data.posts.length - 1].image} alt="image" />
-              <p>{data.posts[data.posts.length - 1].content}</p>
-            </div>
-          )} */}
         </div>
       )}
     </div>

@@ -32,11 +32,13 @@ const BlogsPage = () => {
   const [loading, setLoading] = useState(false);
 
   const { error, data, refetch } = useQuery(GET_POSTS, { client });
-  const handleClick = () => {
-    console.log(data);
-    window.localStorage.setItem("myData", JSON.stringify(data));
+  const handleClick = (postData: any) => {
+    console.log("hi");
+    console.log("arr" + postData);
+    window.localStorage.setItem("myData", JSON.stringify(postData));
     router.push("/singleblog");
   };
+
   useEffect(() => {
     if (error) {
       console.error("Error fetching posts:", error);
@@ -326,7 +328,7 @@ const BlogsPage = () => {
                         </div>
                       </div>
 
-                      <Button variant="text" onClick={handleClick}>
+                      <Button variant="text" onClick={() => handleClick(post)}>
                         Continue Reading
                       </Button>
                     </div>

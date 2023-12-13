@@ -1,49 +1,5 @@
-// const client = createApolloClient(
-//  "https://1a87-103-179-9-163.ngrok-free.app/graphql"
-// );
-// function GetBlog() {
-//   const { error, data, loading } = useQuery(GET_POSTS, { client });
-
-//   useEffect(() => {
-//     if (error) {
-//       console.error("Error fetching posts:", error);
-//     } else if (data) {
-//       console.log("Fetched posts:", data);
-//     } else {
-//       console.log("No posts");
-//     }
-//   }, [error, data]);
-
-//   return (
-//     <div>
-//       {data && (
-//         <div>
-//           <h1>Blog Posts</h1>
-//           {loading && <p>Loading...</p>}
-//           {error && <p>Error: {error.message}</p>}
-//           {/* {data.posts.map((post: any) => (
-//             <div key={post._id}>
-//               <h2>{post.title}</h2>
-//               <p>{post.content}</p>
-//             </div>
-//           ))} */}
-//           {data.posts.length > 0 && (
-//             <div key={data.posts[data.posts.length - 1]._id}>
-//               <h2>{data.posts[data.posts.length - 1].title}</h2>
-//               {/* <img src={data.posts[data.posts.length - 1].image} alt="image" /> */}
-//               <p>{data.posts[data.posts.length - 1].content}</p>
-//             </div>
-//           )}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default GetBlog;
-
 "use client";
-import { Button, Container } from "@mui/material";
+import {  Container } from "@mui/material";
 import { Card, IconButton, CardContent, CardActions } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
@@ -60,6 +16,7 @@ import React from "react";
 const client = createApolloClient(
   "https://certainly-grown-anchovy.ngrok-free.app/graphql"
 );
+
 const page = () => {
   const { error, data, loading, refetch } = useQuery(GET_POSTS, { client });
 
@@ -73,6 +30,8 @@ const page = () => {
       console.log("No posts");
     }
   }, [refetch, error, data]);
+
+  
   return (
     <>
       <Header />
